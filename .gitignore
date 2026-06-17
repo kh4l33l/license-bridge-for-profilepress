@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Build artifacts
+/build/
+*.zip
+
+# Local knowledge-graph tooling output
+/graphify-out/
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# Editor / IDE
+.idea/
+.vscode/
+*.sublime-*
