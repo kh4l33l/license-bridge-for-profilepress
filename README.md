@@ -35,25 +35,30 @@ It automates the full license lifecycle for a plugin or theme you sell:
 
 ## Configuration
 
-### Secrets (required, in `wp-config.php`)
-
-Secrets are **never** stored in the plugin or the database. Copy the two API keys
-from *License Manager → Settings → General*:
+All configuration lives in `wp-config.php` — secrets are **never** stored in the
+plugin or the database.
 
 ```php
-define( 'LBFP_SLM_CREATION_SECRET', 'your-license-creation-api-key' );
+// Required. SLM ships TWO separate API keys (License Manager → Settings → General).
+define( 'LBFP_SLM_CREATION_SECRET',     'your-license-creation-api-key' );
 define( 'LBFP_SLM_VERIFICATION_SECRET', 'your-license-verification-api-key' );
-```
 
-Optional overrides:
-
-```php
-// Point at an SLM install on a different host (defaults to this site).
+// Optional. SLM running on a different host (defaults to this site, home_url()).
 define( 'LBFP_SLM_URL', 'https://licenses.example.com' );
 
-// Pin the SLM item reference instead of setting it in the admin UI.
+// Optional. Pin the SLM item reference instead of setting it in the admin UI.
 define( 'LBFP_ITEM_REFERENCE', 'My Pro Plugin' );
 ```
+
+| Constant | Required | What it does |
+|---|---|---|
+| `LBFP_SLM_CREATION_SECRET` | Yes | SLM **License Creation API key**. Issues and updates licenses when subscriptions activate, renew, upgrade, or expire. |
+| `LBFP_SLM_VERIFICATION_SECRET` | Yes | SLM **License Verification API key**. Validates, activates, and deactivates licenses, and gates updates (the My Account tab, dashboard status, update server, and account connection). |
+| `LBFP_SLM_URL` | No | SLM endpoint. Defaults to this site. Set it if SLM runs elsewhere. |
+| `LBFP_ITEM_REFERENCE` | No | Forces the SLM item reference, overriding the admin setting so it can't drift. |
+
+The two keys are **different** values in SLM — don't reuse one for both, and the
+creation key never goes in the verification slot (or vice versa).
 
 ### Admin settings (**ProfilePress → SLM Integration**)
 

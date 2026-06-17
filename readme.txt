@@ -4,7 +4,7 @@ Tags: profilepress, software license manager, licensing, memberships, updates
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.0.1
+Stable tag: 0.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,15 +32,21 @@ It automates the whole license lifecycle:
 
 = Configuration =
 
-SLM API secrets are read from `wp-config.php` and are never stored in the
-database. Add the two keys from *License Manager → Settings → General*:
+All configuration is read from `wp-config.php` — SLM API secrets are never stored
+in the database or the plugin files. SLM ships **two separate API keys** (License
+Manager → Settings → General); the plugin needs both:
 
 `define( 'LBFP_SLM_CREATION_SECRET', 'your-license-creation-api-key' );`
 `define( 'LBFP_SLM_VERIFICATION_SECRET', 'your-license-verification-api-key' );`
 
-Then set the licensed product (its SLM item reference and update metadata) and
-map each membership plan to the number of sites its license allows under
-**ProfilePress → SLM Integration**.
+* `LBFP_SLM_CREATION_SECRET` (required) — the License Creation API key. Issues and updates licenses when subscriptions activate, renew, upgrade, or expire.
+* `LBFP_SLM_VERIFICATION_SECRET` (required) — the License Verification API key. Validates, activates, and deactivates licenses, and gates updates (My Account tab, dashboard, update server, account connection).
+* `LBFP_SLM_URL` (optional) — SLM endpoint; defaults to this site. Set it only if SLM runs on another host.
+* `LBFP_ITEM_REFERENCE` (optional) — pins the SLM item reference, overriding the admin setting.
+
+The two keys are different values — don't swap them or reuse one for both. Then
+set the licensed product and map each membership plan to its allowed site count
+under **ProfilePress → SLM Integration**.
 
 == Installation ==
 
@@ -69,6 +75,14 @@ or to the plugin files.
 Yes. By default the plugin talks to SLM on the same site (`home_url()`). Define
 `LBFP_SLM_URL` in `wp-config.php` to point at SLM on another host.
 
+= What is the difference between the two SLM API keys? =
+
+Software License Manager uses two secrets. The Creation key
+(`LBFP_SLM_CREATION_SECRET`) issues and updates licenses; the Verification key
+(`LBFP_SLM_VERIFICATION_SECRET`) checks, activates, and deactivates them and
+gates updates. They are different values — set each in its own constant, and do
+not swap them.
+
 = What happens when a subscription is cancelled? =
 
 Nothing immediately. The license keeps working until the paid period actually
@@ -83,6 +97,10 @@ registered, it streams the release ZIP you configured on the settings screen.
 
 == Changelog ==
 
+= 0.0.2 =
+* The settings screen now names and checks both required wp-config secrets (LBFP_SLM_CREATION_SECRET and LBFP_SLM_VERIFICATION_SECRET) and warns if either is missing. Removed the unused LBFP_SLM_SECRET constant.
+* Added the lbfp_rest_namespaces and lbfp_oauth_authorize_actions filters, so a renamed install can keep serving an older REST namespace / OAuth action to clients that have not updated yet.
+
 = 0.0.1 =
 * First public release.
 * Configurable licensed product (SLM item reference + update metadata).
@@ -92,6 +110,9 @@ registered, it streams the release ZIP you configured on the settings screen.
 * License-gated update server and account-connection endpoints.
 
 == Upgrade Notice ==
+
+= 0.0.2 =
+Set both LBFP_SLM_CREATION_SECRET and LBFP_SLM_VERIFICATION_SECRET in wp-config.php; the unused LBFP_SLM_SECRET constant has been removed.
 
 = 0.0.1 =
 First public release.

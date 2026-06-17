@@ -3,7 +3,7 @@
  * Plugin Name: License Bridge for ProfilePress
  * Plugin URI:  https://ibrahim.ng/license-bridge-for-profilepress
  * Description: Bridges ProfilePress paid memberships to the Software License Manager (SLM). Auto-provisions licenses on subscription activation, exposes license info to ProfilePress emails and the My Account page, and serves license-gated plugin updates to customer sites.
- * Version:     0.0.1
+ * Version:     0.0.2
  * Author:      Ibrahim Nasir
  * Author URI:  https://ibrahim.ng
  * License:     GPLv2 or later
@@ -16,7 +16,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'LBFP_VERSION', '0.0.1' );
+define( 'LBFP_VERSION', '0.0.2' );
 define( 'LBFP_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'LBFP_URL',     plugin_dir_url( __FILE__ ) );
 define( 'LBFP_FILE',    __FILE__ );
