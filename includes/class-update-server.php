@@ -24,25 +24,30 @@ class Update_Server {
 	}
 
 	public function register_routes(): void {
-		register_rest_route( self::NAMESPACE, '/update/check', [
-			'methods'             => WP_REST_Server::READABLE,
-			'callback'            => [ $this, 'check' ],
-			'permission_callback' => '__return_true',
-			'args'                => [
-				'license_key' => [ 'type' => 'string', 'required' => true ],
-				'domain'      => [ 'type' => 'string', 'required' => true ],
-			],
-		] );
+		$args = [
+			'license_key' => [ 'type' => 'string', 'required' => true ],
+			'domain'      => [ 'type' => 'string', 'required' => true ],
+		];
 
-		register_rest_route( self::NAMESPACE, '/update/download', [
-			'methods'             => WP_REST_Server::READABLE,
-			'callback'            => [ $this, 'download' ],
-			'permission_callback' => '__return_true',
-			'args'                => [
-				'license_key' => [ 'type' => 'string', 'required' => true ],
-				'domain'      => [ 'type' => 'string', 'required' => true ],
-			],
-		] );
+		foreach ( self::namespaces() as $namespace ) {
+			register_rest_route( $namespace, '/update/check', [
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'check' ],
+				'permission_callback' => '__return_true',
+				'args'                => $args,
+			] );
+
+			register_rest_route( $namespace, '/update/download', [
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'download' ],
+				'permission_callback' => '__return_true',
+				'args'                => $args,
+			] );
+		}
+	}
+
+	public static function namespaces(): array {
+		return array_values( array_unique( (array) apply_filters( 'lbfp_rest_namespaces', [ self::NAMESPACE ] ) ) );
 	}
 
 	public function check( WP_REST_Request $request ): WP_REST_Response {

@@ -121,13 +121,13 @@ class Admin_Settings {
 				<?php
 				printf(
 					/* translators: %s: SLM URL */
-					esc_html__( 'SLM target: %s. Set LBFP_SLM_SECRET in wp-config.php to enable license provisioning.', 'license-bridge-for-profilepress' ),
+					esc_html__( 'SLM target: %s. Set LBFP_SLM_CREATION_SECRET and LBFP_SLM_VERIFICATION_SECRET in wp-config.php to enable license provisioning.', 'license-bridge-for-profilepress' ),
 					'<code>' . esc_html( LBFP_SLM_URL ) . '</code>'
 				);
 				?>
-				<?php if ( '' === LBFP_SLM_SECRET ) : ?>
+				<?php if ( '' === (string) LBFP_SLM_CREATION_SECRET || '' === (string) LBFP_SLM_VERIFICATION_SECRET ) : ?>
 					<br><strong style="color:#b71c1c;">
-						<?php esc_html_e( 'LBFP_SLM_SECRET is not set — license calls will fail.', 'license-bridge-for-profilepress' ); ?>
+						<?php esc_html_e( 'One or both SLM secrets are not set in wp-config.php — license calls will fail. Set LBFP_SLM_CREATION_SECRET (License Creation API key) and LBFP_SLM_VERIFICATION_SECRET (License Verification API key).', 'license-bridge-for-profilepress' ); ?>
 					</strong>
 				<?php endif; ?>
 			</p>

@@ -11,7 +11,7 @@
  * Text Domain: license-bridge-for-profilepress
  * Requires at least: 6.0
  * Requires PHP: 7.4
- * Requires Plugins: profilepress, software-license-manager
+ * Requires Plugins: wp-user-avatar, software-license-manager
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -31,9 +31,6 @@ if ( ! defined( 'LBFP_SLM_CREATION_SECRET' ) ) {
 }
 if ( ! defined( 'LBFP_SLM_VERIFICATION_SECRET' ) ) {
 	define( 'LBFP_SLM_VERIFICATION_SECRET', '' );
-}
-if ( ! defined( 'LBFP_SLM_SECRET' ) ) {
-	define( 'LBFP_SLM_SECRET', LBFP_SLM_VERIFICATION_SECRET );
 }
 
 spl_autoload_register( function ( string $class ): void {

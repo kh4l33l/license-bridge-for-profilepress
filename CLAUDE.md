@@ -36,7 +36,6 @@ original `flowsync_lb_*` keys (from the internal FlowSync-era build) into their
   sending the wrong one returns `CREATE_KEY_INVALID` / `VERIFY_KEY_INVALID`.
   `SLM_Client::secret_for()` picks the right one per action. **No code defaults —
   secrets must never live in VCS.**
-- `LBFP_SLM_SECRET` — back-compat alias; falls back to the verification secret.
 - `LBFP_SLM_URL` — SLM endpoint, defaults to `home_url()` (SLM usually
   co-located). Override to target SLM on another host.
 - `LBFP_ITEM_REFERENCE` — optional; pins the SLM item reference and wins over
@@ -102,6 +101,13 @@ route (so the package can live outside the web root); a configured `https://`
 URL is handed back / redirected as-is, since a public file can't be gated anyway.
 Release metadata lives in the `lbfp_release` option, edited on the settings
 screen.
+
+The update and OAuth routes register under every namespace returned by the
+`lbfp_rest_namespaces` filter (default: the one current namespace), and the
+OAuth admin-post handler under every action from `lbfp_oauth_authorize_actions`.
+A site that renamed the plugin can keep serving an old REST namespace / action
+to clients that haven't updated yet, by adding the legacy values via those
+filters — no need to bake legacy names into the plugin.
 
 ## Account connection (`OAuth_REST`)
 

@@ -10,7 +10,6 @@ defined( 'ABSPATH' ) || exit;
 
 class OAuth_REST {
 
-	private const NAMESPACE = 'license-bridge-for-profilepress/v1';
 	private const CODE_TTL  = 600;
 	private const ACTION_AUTHORIZE = 'lbfp_oauth_authorize';
 
@@ -24,40 +23,49 @@ class OAuth_REST {
 
 	public function register(): void {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
-		add_action( 'admin_post_' . self::ACTION_AUTHORIZE, array( $this, 'authorize_admin' ) );
-		add_action( 'admin_post_nopriv_' . self::ACTION_AUTHORIZE, array( $this, 'authorize_admin' ) );
+
+		foreach ( self::authorize_actions() as $action ) {
+			add_action( 'admin_post_' . $action, array( $this, 'authorize_admin' ) );
+			add_action( 'admin_post_nopriv_' . $action, array( $this, 'authorize_admin' ) );
+		}
+	}
+
+	private static function authorize_actions(): array {
+		return array_values( array_unique( (array) apply_filters( 'lbfp_oauth_authorize_actions', array( self::ACTION_AUTHORIZE ) ) ) );
 	}
 
 	public function register_routes(): void {
-		register_rest_route(
-			self::NAMESPACE,
-			'/oauth/authorize',
-			array(
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'authorize' ),
-				'permission_callback' => '__return_true',
-			)
-		);
+		foreach ( Update_Server::namespaces() as $namespace ) {
+			register_rest_route(
+				$namespace,
+				'/oauth/authorize',
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'authorize' ),
+					'permission_callback' => '__return_true',
+				)
+			);
 
-		register_rest_route(
-			self::NAMESPACE,
-			'/oauth/token',
-			array(
-				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => array( $this, 'token' ),
-				'permission_callback' => '__return_true',
-				'args'                => array(
-					'code'     => array(
-						'type'     => 'string',
-						'required' => true,
+			register_rest_route(
+				$namespace,
+				'/oauth/token',
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'token' ),
+					'permission_callback' => '__return_true',
+					'args'                => array(
+						'code'     => array(
+							'type'     => 'string',
+							'required' => true,
+						),
+						'site_url' => array(
+							'type'     => 'string',
+							'required' => true,
+						),
 					),
-					'site_url' => array(
-						'type'     => 'string',
-						'required' => true,
-					),
-				),
-			)
-		);
+				)
+			);
+		}
 	}
 
 	public function authorize( WP_REST_Request $request ): void {
